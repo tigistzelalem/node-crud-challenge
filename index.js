@@ -1,17 +1,17 @@
 const express = require('express')
 const app = express()
+const db = require('./src/config/db');
+require('dotenv').config();
+const personRouter = require('./src/route/personRoute');
 
-let persons = [{
-    id: '1',
-    name: 'Sam',
-    age: '26',
-    hobbies: []    
-}] //This is your in memory database
+app.use(express.json());
 
-app.set('db', persons)
-//TODO: Implement crud of person
 
-if (require.main === module) {
-    app.listen(3000)
-}
-module.exports = app;
+const port = process.env.PORT
+db.once('open', () => {
+    app.listen(port, () => {
+        console.log(`Server is running on port ${port}`);
+    });
+});
+
+app.use('/api', personRouter)
